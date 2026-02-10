@@ -101,9 +101,27 @@ input:focus-visible {
   box-shadow: 0 0 0 2px hsl(var(--primary));
 }
 
-@media (max-width: 640px) {
+@media (max-width: 640px) and (orientation: portrait) {
   :root {
     --border-width: 2px;
     --card-shadow: 6px 6px 0px #000000;
+  }
+
+  .app-shell {
+    align-items: flex-start;
+    padding: 0.875rem;
+  }
+
+  .app-main {
+    max-width: 100%;
+  }
+
+  .app-title {
+    font-size: 2.25rem;
+    line-height: 0.9;
+  }
+
+  .app-card {
+    padding: 1rem;
   }
 }
