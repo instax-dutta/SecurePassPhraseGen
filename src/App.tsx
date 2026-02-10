@@ -28,37 +28,65 @@ function App() {
   const [wordCount, setWordCount] = useState(4);
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [generationError, setGenerationError] = useState('');
+  const maxWordCount = Math.min(24, words.length);
 
   const generatePassphrase = React.useCallback(async () => {
-    let newPassphrase: string;
-    let attempts = 0;
-    const maxAttempts = 100; // Prevent infinite loops
+    const attemptedThisRun = new Set<string>();
+    const maxAttemptsPerLength = 300;
+    let candidateWordCount = wordCount;
+    let newPassphrase = '';
+    let isUnique = false;
 
-    do {
-      // Create a copy of the words array to ensure no word is used twice
-      const availableWords = [...words];
-      const selectedWords = [];
+    while (candidateWordCount <= maxWordCount && !isUnique) {
+      let attempts = 0;
 
-      // Select unique words based on user's wordCount
-      for (let i = 0; i < wordCount; i++) {
-        const randomIndex = Math.floor(Math.random() * availableWords.length);
-        selectedWords.push(availableWords[randomIndex]);
-        // Remove the selected word to prevent reuse
-        availableWords.splice(randomIndex, 1);
+      while (attempts < maxAttemptsPerLength && !isUnique) {
+        const availableWords = [...words];
+        const selectedWords: string[] = [];
+
+        for (let i = 0; i < candidateWordCount; i++) {
+          const randomIndex = Math.floor(Math.random() * availableWords.length);
+          selectedWords.push(availableWords[randomIndex]);
+          availableWords.splice(randomIndex, 1);
+        }
+
+        const candidate = selectedWords.join('-');
+        attempts++;
+
+        if (attemptedThisRun.has(candidate)) {
+          continue;
+        }
+
+        attemptedThisRun.add(candidate);
+
+        const alreadyUsed = previousPhrases.has(candidate) || await checkPassphraseExists(candidate);
+        if (!alreadyUsed) {
+          newPassphrase = candidate;
+          isUnique = true;
+        }
       }
 
-      newPassphrase = selectedWords.join('-');
-      attempts++;
+      if (!isUnique) {
+        candidateWordCount++;
+      }
+    }
 
-      // Check both local and database for existing passphrase
-    } while ((previousPhrases.has(newPassphrase) || await checkPassphraseExists(newPassphrase)) && attempts < maxAttempts);
+    if (!isUnique) {
+      setGenerationError('Could not find a unique passphrase. Clear local cache or try again.');
+      return;
+    }
 
-    // Add the new passphrase to the set of used phrases and save to database
+    if (candidateWordCount !== wordCount) {
+      setWordCount(candidateWordCount);
+    }
+
     previousPhrases.add(newPassphrase);
     await savePassphrase(newPassphrase);
     setPassphrase(newPassphrase);
     setCopied(false);
-  }, [wordCount, previousPhrases]);
+    setGenerationError('');
+  }, [maxWordCount, previousPhrases, wordCount]);
 
   // Generate initial passphrase when component mounts
   React.useEffect(() => {
@@ -130,14 +158,14 @@ function App() {
                 <input
                   type="range"
                   min={4}
-                  max={24}
+                  max={maxWordCount}
                   value={wordCount}
-                  onChange={(e) => setWordCount(parseInt(e.target.value))}
+                  onChange={(e) => setWordCount(parseInt(e.target.value, 10))}
                   className="w-full h-8 bg-muted brutal-border appearance-none cursor-pointer accent-primary p-1"
                   aria-label="Passphrase complexity level"
                   role="slider"
                   aria-valuemin={4}
-                  aria-valuemax={24}
+                  aria-valuemax={maxWordCount}
                   aria-valuenow={wordCount}
                 />
                 <div className="flex justify-between text-sm font-bold opacity-50 uppercase">
@@ -180,6 +208,11 @@ function App() {
                   </button>
                 )}
               </div>
+              {generationError && (
+                <p className="mt-3 font-bold text-sm text-primary uppercase tracking-wide">
+                  {generationError}
+                </p>
+              )}
             </div>
           </section>
 
