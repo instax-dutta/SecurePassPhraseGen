@@ -10,11 +10,23 @@ if (!connectionString) {
   process.exit(1);
 }
 
+// Secure connection configuration
 const pool = new Pool({
   connectionString,
   ssl: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: true // Verify SSL certificate
+  },
+  max: 5, // Limit connection pool size
+  idleTimeoutMillis: 30000, // Close idle connections after 30 seconds
+  connectionTimeoutMillis: 10000 // Timeout after 10 seconds if connection fails
 });
+
+// Test connection on startup
+pool.query('SELECT NOW()')
+  .then(() => console.log('Database connection established'))
+  .catch((err) => {
+    console.error('Failed to connect to database:', err);
+    process.exit(1);
+  });
 
 export default pool;
