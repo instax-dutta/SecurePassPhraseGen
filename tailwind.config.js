@@ -41,7 +41,7 @@ export default {
       },
       fontFamily: {
         heading: ['var(--font-heading)', 'sans-serif'],
-        sans: ['var(--font-sans)', 'monospace'],
+        sans: ['var(--font-sans)', 'sans-serif'],
       },
       borderWidth: {
         '3': 'var(--border-width)',

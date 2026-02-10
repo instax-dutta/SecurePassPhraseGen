@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Shield, Key, Lock, RefreshCw, Hash, Copy, CheckCircle } from 'lucide-react';
+import { Loading } from './components/Loading';
 
 const words = [
   // Common but strong words
@@ -25,8 +26,9 @@ function App() {
   const [previousPhrases] = useState(new Set<string>());
   const [wordCount, setWordCount] = useState(4);
   const [copied, setCopied] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const generatePassphrase = () => {
+  const generatePassphrase = React.useCallback(() => {
     let newPassphrase: string;
     let attempts = 0;
     const maxAttempts = 100; // Prevent infinite loops
@@ -52,7 +54,12 @@ function App() {
     previousPhrases.add(newPassphrase);
     setPassphrase(newPassphrase);
     setCopied(false);
-  };
+  }, [wordCount, previousPhrases]);
+
+  // Generate initial passphrase when component mounts
+  React.useEffect(() => {
+    generatePassphrase();
+  }, [generatePassphrase]);
 
   const copyToClipboard = async () => {
     try {
@@ -64,16 +71,21 @@ function App() {
     }
   };
 
+  if (isLoading) {
+    return <Loading onLoadComplete={() => setIsLoading(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-white p-4 md:p-8 flex items-center justify-center">
       {/* Decorative background grid/elements (optional but adds vibe) */}
       <div className="fixed inset-0 pointer-events-none opacity-5 z-0"
-        style={{ backgroundImage: 'radial-gradient(hsl(var(--primary)) 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+        style={{ backgroundImage: 'radial-gradient(hsl(var(--primary)) 1px, transparent 1px)', backgroundSize: '24px 24px' }} 
+        aria-hidden="true" />
 
       {/* Content */}
-      <div className="relative z-10 container max-w-4xl mx-auto flex flex-col items-center">
+      <main className="relative z-10 container max-w-4xl mx-auto flex flex-col items-center">
         <div className="flex items-center gap-4 mb-8">
-          <Shield className="w-16 h-16 text-primary" strokeWidth={2.5} />
+          <Shield className="w-16 h-16 text-primary" strokeWidth={2.5} aria-hidden="true" />
           <div>
             <h1 className="text-5xl md:text-7xl font-heading leading-none uppercase -rotate-1">
               Secure
@@ -89,16 +101,16 @@ function App() {
 
         {/* Main Interface */}
         <div className="w-full space-y-8">
-          <div className="brutal-card p-8 md:p-12 relative overflow-hidden group">
+          <section className="brutal-card p-8 md:p-12 relative overflow-hidden group">
             {/* Top Bar Decoration */}
-            <div className="absolute top-0 left-0 right-0 h-2 bg-primary" />
+            <div className="absolute top-0 left-0 right-0 h-2 bg-primary" aria-hidden="true" />
 
             <div className="flex items-center justify-between mb-10">
               <div className="flex items-center gap-3">
-                <Key className="w-8 h-8 text-secondary" />
+                <Key className="w-8 h-8 text-secondary" aria-hidden="true" />
                 <span className="font-heading text-xl uppercase">Vault Config</span>
               </div>
-              <div className="h-8 w-8 brutal-border bg-accent" />
+              <div className="h-8 w-8 brutal-border bg-accent" aria-hidden="true" />
             </div>
 
             {/* Controls */}
@@ -106,18 +118,23 @@ function App() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between font-heading">
                   <div className="flex items-center gap-2">
-                    <Hash className="w-6 h-6 text-primary" />
+                    <Hash className="w-6 h-6 text-primary" aria-hidden="true" />
                     <span className="uppercase tracking-tight">Complexity Level</span>
                   </div>
                   <span className="text-2xl text-primary">{wordCount}</span>
                 </div>
                 <input
                   type="range"
-                  min="4"
-                  max="24"
+                  min={4}
+                  max={24}
                   value={wordCount}
                   onChange={(e) => setWordCount(parseInt(e.target.value))}
                   className="w-full h-8 bg-muted brutal-border appearance-none cursor-pointer accent-primary p-1"
+                  aria-label="Passphrase complexity level"
+                  role="slider"
+                  aria-valuemin={4}
+                  aria-valuemax={24}
+                  aria-valuenow={wordCount}
                 />
                 <div className="flex justify-between text-sm font-bold opacity-50 uppercase">
                   <span>Weak</span>
@@ -129,8 +146,9 @@ function App() {
                 <button
                   onClick={generatePassphrase}
                   className="brutal-button bg-primary text-white p-6 flex items-center justify-center space-x-4 text-2xl group active:bg-primary/90"
+                  aria-label="Generate new secure passphrase"
                 >
-                  <RefreshCw className="w-8 h-8 group-hover:rotate-180 transition-transform duration-700" strokeWidth={3} />
+                  <RefreshCw className="w-8 h-8 group-hover:rotate-180 transition-transform duration-700" strokeWidth={3} aria-hidden="true" />
                   <span>Execute!</span>
                 </button>
               </div>
@@ -148,29 +166,43 @@ function App() {
                     onClick={copyToClipboard}
                     className="brutal-button bg-secondary text-white p-4 hover:bg-secondary/90 shrink-0"
                     title="Copy to clipboard"
+                    aria-label="Copy passphrase to clipboard"
                   >
                     {copied ? (
-                      <CheckCircle className="w-8 h-8 text-accent" />
+                      <CheckCircle className="w-8 h-8 text-accent" aria-hidden="true" />
                     ) : (
-                      <Copy className="w-8 h-8" />
+                      <Copy className="w-8 h-8" aria-hidden="true" />
                     )}
                   </button>
                 )}
               </div>
             </div>
-          </div>
+          </section>
 
           {/* Security Status Badge */}
-          <div className="flex justify-center">
+          <section className="flex justify-center">
             <div className="brutal-card bg-secondary/20 p-4 flex items-center gap-4 -rotate-1">
-              <Lock className="w-6 h-6 text-primary" />
+              <Lock className="w-6 h-6 text-primary" aria-hidden="true" />
               <span className="font-heading text-sm uppercase tracking-widest">
                 Entropy: {wordCount * 12.5} Bits | SHA-256 Compliant
               </span>
             </div>
-          </div>
+          </section>
         </div>
-      </div>
+
+        {/* Footer with Backlink */}
+        <footer className="mt-16 w-full flex justify-center">
+          <a 
+            href="https://sdad.pro" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="brutal-card bg-primary text-white px-6 py-3 font-heading uppercase tracking-widest text-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+            aria-label="Visit SDAD.PRO - creator of this passphrase generator"
+          >
+            Built by <span className="text-secondary">SDAD.PRO</span>
+          </a>
+        </footer>
+      </main>
     </div>
   );
 }

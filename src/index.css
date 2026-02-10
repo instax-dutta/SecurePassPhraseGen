@@ -4,40 +4,42 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 45 100% 7%;
-    --foreground: 0 0% 90%;
-    --card: 45 100% 11%;
-    --card-foreground: 0 0% 88%;
-    --popover: 0 0% 11%;
-    --popover-foreground: 222 84% 88%;
-    --primary: 340 82% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 170 60% 16%;
-    --secondary-foreground: 0 0% 85%;
-    --muted: 45 60% 14%;
-    --muted-foreground: 0 0% 55%;
-    --accent: 55 90% 55%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 340 82% 55%;
-    --radius: 0px;
-    --font-sans: 'Space Mono', monospace;
-    --font-heading: 'Archivo Black', sans-serif;
-    --card-shadow: 10px 10px 0px hsl(0 0% 0% / 1); /* Sharper, more brutal shadow */
-    --card-backdrop: none;
-    --border-width: 3px;
-    
-    color-scheme: dark;
-  }
+:root {
+  --background: 0 0% 5%;
+  --foreground: 0 0% 90%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 88%;
+  --popover: 0 0% 8%;
+  --popover-foreground: 222 84% 88%;
+  --primary: 340 82% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 170 60% 25%;
+  --secondary-foreground: 0 0% 85%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 60%;
+  --accent: 55 80% 50%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 20%;
+  --input: 0 0% 15%;
+  --ring: 340 82% 50%;
+  --radius: 0px;
+  --font-sans: 'Space Mono', monospace;
+  --font-heading: 'Archivo Black', sans-serif;
+  --card-shadow: 10px 10px 0px #000000;
+  --border-width: 3px;
+
+  color-scheme: dark;
 }
 
 body {
-  @apply bg-background text-foreground font-sans antialiased;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
 }
 
 html {
@@ -50,15 +52,33 @@ html {
 }
 
 .brutal-card {
-  @apply bg-card text-card-foreground brutal-border;
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border: var(--border-width) solid hsl(var(--border));
   box-shadow: var(--card-shadow);
 }
 
 .brutal-button {
-  @apply brutal-border font-heading uppercase tracking-wider transition-all duration-200 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
-  box-shadow: 4px 4px 0px hsl(0 0% 0% / 1);
+  border: var(--border-width) solid hsl(var(--border));
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.brutal-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #000000;
 }
 
 .brutal-input {
-  @apply bg-background brutal-border p-3 focus:outline-none focus:ring-2 focus:ring-primary;
+  background-color: hsl(var(--background));
+  border: var(--border-width) solid hsl(var(--border));
+  padding: 0.75rem;
+}
+
+.brutal-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--primary));
 }

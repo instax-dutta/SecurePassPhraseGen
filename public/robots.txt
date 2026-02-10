@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /dist/
+Disallow: /node_modules/
+Disallow: /src/
+Disallow: /docs/
+Disallow: /AGENTS.md
+
+Allow: /
+
+Sitemap: https://passphrase.sdad.pro/sitemap.xml

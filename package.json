@@ -7,12 +7,18 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "remotion:dev": "remotion studio",
+    "remotion:render": "remotion render src/index.remotion.tsx LoadingAnimation public/loading.mp4",
+    "remotion:still": "remotion still src/index.remotion.tsx LoadingAnimation public/loading.png"
   },
   "dependencies": {
+    "@remotion/cli": "^4.0.420",
+    "framer-motion": "^12.34.0",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.420"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
