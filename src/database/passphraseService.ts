@@ -1,36 +1,60 @@
-import pool from './connection';
-import crypto from 'crypto';
+const storageKey = 'secure-passphrase-hashes';
+const defaultSalt = 'default-salt';
+const passphraseSalt = import.meta.env.VITE_PASSPHRASE_SALT || defaultSalt;
 
-// Hash passphrase using SHA-256 with salt
-export const hashPassphrase = (passphrase: string): string => {
-  const salt = process.env.PASSPHRASE_SALT || 'default-salt'; // Should be stored in environment variable
-  const hashed = crypto.createHmac('sha256', salt).update(passphrase).digest('hex');
-  return hashed;
+const getStoredHashes = (): Set<string> => {
+  try {
+    const raw = localStorage.getItem(storageKey);
+    if (!raw) {
+      return new Set<string>();
+    }
+
+    const parsed = JSON.parse(raw) as string[];
+    if (!Array.isArray(parsed)) {
+      return new Set<string>();
+    }
+
+    return new Set<string>(parsed);
+  } catch (error) {
+    console.error('Error reading passphrase cache:', error);
+    return new Set<string>();
+  }
+};
+
+const saveStoredHashes = (hashes: Set<string>): void => {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(Array.from(hashes)));
+  } catch (error) {
+    console.error('Error writing passphrase cache:', error);
+  }
+};
+
+const toHex = (buffer: ArrayBuffer): string => {
+  return Array.from(new Uint8Array(buffer))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+};
+
+// Hash passphrase using Web Crypto SHA-256 (browser-safe).
+export const hashPassphrase = async (passphrase: string): Promise<string> => {
+  if (!window.crypto?.subtle) {
+    return `${passphraseSalt}:${passphrase}`;
+  }
+
+  const data = new TextEncoder().encode(`${passphraseSalt}:${passphrase}`);
+  const digest = await window.crypto.subtle.digest('SHA-256', data);
+  return toHex(digest);
 };
 
 export const checkPassphraseExists = async (passphrase: string): Promise<boolean> => {
-  try {
-    const hashedPassphrase = hashPassphrase(passphrase);
-    const result = await pool.query(
-      'SELECT COUNT(*) FROM passphrases WHERE hashed_passphrase = $1',
-      [hashedPassphrase]
-    );
-
-    return parseInt(result.rows[0].count) > 0;
-  } catch (error) {
-    console.error('Error checking passphrase existence:', error);
-    return false; // Fallback to local check if DB fails
-  }
+  const hash = await hashPassphrase(passphrase);
+  const hashes = getStoredHashes();
+  return hashes.has(hash);
 };
 
 export const savePassphrase = async (passphrase: string): Promise<void> => {
-  try {
-    const hashedPassphrase = hashPassphrase(passphrase);
-    await pool.query(
-      'INSERT INTO passphrases (hashed_passphrase, created_at) VALUES ($1, NOW())',
-      [hashedPassphrase]
-    );
-  } catch (error) {
-    console.error('Error saving passphrase:', error);
-  }
+  const hash = await hashPassphrase(passphrase);
+  const hashes = getStoredHashes();
+  hashes.add(hash);
+  saveStoredHashes(hashes);
 };
