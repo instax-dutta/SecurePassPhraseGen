@@ -108,52 +108,50 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-white p-4 md:p-8 flex items-center justify-center">
+    <div className="h-[100dvh] overflow-hidden bg-background text-foreground font-sans selection:bg-primary selection:text-white p-3 sm:p-4 md:p-6">
       {/* Decorative background grid/elements (optional but adds vibe) */}
       <div className="fixed inset-0 pointer-events-none opacity-5 z-0"
         style={{ backgroundImage: 'radial-gradient(hsl(var(--primary)) 1px, transparent 1px)', backgroundSize: '24px 24px' }} 
         aria-hidden="true" />
 
       {/* Content */}
-      <main className="relative z-10 container max-w-4xl mx-auto flex flex-col items-center">
-        <div className="flex items-center gap-4 mb-8">
-          <img src="/logo.svg" alt="Secure Passphrase Generator Logo" className="w-16 h-16" />
-          <div>
-            <h1 className="text-5xl md:text-7xl font-heading leading-none uppercase -rotate-1">
-              Secure
-              <br />
-              <span className="text-accent underline decoration-primary underline-offset-4">Passphrase</span>
+      <main className="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-col gap-3 sm:gap-4">
+        <header className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <img src="/logo.svg" alt="Secure Passphrase Generator Logo" className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14" />
+            <h1 className="font-heading leading-[0.9] uppercase text-[clamp(1.8rem,6vw,3.6rem)]">
+              Secure <span className="text-accent underline decoration-primary underline-offset-4">Passphrase</span>
             </h1>
           </div>
-        </div>
+        </header>
 
-        <p className="text-xl md:text-2xl font-bold text-muted-foreground max-w-2xl text-center mb-12 rotate-1">
+        <p className="max-w-2xl text-xs font-bold text-muted-foreground sm:text-sm md:text-base">
           Generate bulletproof, memorable phrases with flat-out raw security.
         </p>
 
         {/* Main Interface */}
-        <div className="w-full space-y-8">
-          <section className="brutal-card p-8 md:p-12 relative overflow-hidden group">
+        <div className="flex min-h-0 flex-1 flex-col gap-3 sm:gap-4">
+          <section className="brutal-card relative overflow-hidden p-4 sm:p-5 md:p-6">
             {/* Top Bar Decoration */}
-            <div className="absolute top-0 left-0 right-0 h-2 bg-primary" aria-hidden="true" />
+            <div className="absolute left-0 right-0 top-0 h-2 bg-primary" aria-hidden="true" />
 
-            <div className="flex items-center justify-between mb-10">
-              <div className="flex items-center gap-3">
-                <Key className="w-8 h-8 text-secondary" aria-hidden="true" />
-                <span className="font-heading text-xl uppercase">Vault Config</span>
+            <div className="mb-4 flex items-center justify-between sm:mb-5">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Key className="h-6 w-6 text-secondary sm:h-7 sm:w-7" aria-hidden="true" />
+                <span className="font-heading text-base uppercase sm:text-lg">Vault Config</span>
               </div>
-              <div className="h-8 w-8 brutal-border bg-accent" aria-hidden="true" />
+              <div className="h-6 w-6 brutal-border bg-accent sm:h-7 sm:w-7" aria-hidden="true" />
             </div>
 
             {/* Controls */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-              <div className="space-y-4">
+            <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between font-heading">
                   <div className="flex items-center gap-2">
-                    <Hash className="w-6 h-6 text-primary" aria-hidden="true" />
-                    <span className="uppercase tracking-tight">Complexity Level</span>
+                    <Hash className="h-5 w-5 text-primary sm:h-6 sm:w-6" aria-hidden="true" />
+                    <span className="uppercase tracking-tight text-sm sm:text-base">Complexity Level</span>
                   </div>
-                  <span className="text-2xl text-primary">{wordCount}</span>
+                  <span className="text-xl text-primary sm:text-2xl">{wordCount}</span>
                 </div>
                 <input
                   type="range"
@@ -161,14 +159,14 @@ function App() {
                   max={maxWordCount}
                   value={wordCount}
                   onChange={(e) => setWordCount(parseInt(e.target.value, 10))}
-                  className="w-full h-8 bg-muted brutal-border appearance-none cursor-pointer accent-primary p-1"
+                  className="h-8 w-full cursor-pointer appearance-none bg-muted p-1 brutal-border accent-primary"
                   aria-label="Passphrase complexity level"
                   role="slider"
                   aria-valuemin={4}
                   aria-valuemax={maxWordCount}
                   aria-valuenow={wordCount}
                 />
-                <div className="flex justify-between text-sm font-bold opacity-50 uppercase">
+                <div className="flex justify-between text-xs font-bold uppercase opacity-50 sm:text-sm">
                   <span>Weak</span>
                   <span>Unbreakable</span>
                 </div>
@@ -177,10 +175,10 @@ function App() {
               <div className="flex flex-col justify-end">
                 <button
                   onClick={generatePassphrase}
-                  className="brutal-button bg-primary text-white p-6 flex items-center justify-center space-x-4 text-2xl group active:bg-primary/90"
+                  className="brutal-button flex min-h-11 items-center justify-center gap-3 bg-primary px-4 py-3 text-base text-white active:bg-primary/90 sm:text-lg"
                   aria-label="Generate new secure passphrase"
                 >
-                  <RefreshCw className="w-8 h-8 group-hover:rotate-180 transition-transform duration-700" strokeWidth={3} aria-hidden="true" />
+                  <RefreshCw className="h-6 w-6 transition-transform duration-700 group-hover:rotate-180" strokeWidth={3} aria-hidden="true" />
                   <span>Execute!</span>
                 </button>
               </div>
@@ -188,28 +186,28 @@ function App() {
 
             {/* Generated Output */}
             <div className="relative">
-              <label className="absolute -top-4 left-4 font-heading bg-card px-2 text-sm uppercase text-secondary">Output Pipeline</label>
-              <div className="brutal-input flex items-center justify-between gap-6 min-h-[100px] p-6 group-hover:border-primary transition-colors">
-                <p className="text-2xl md:text-4xl font-heading text-accent break-all flex-1 tracking-tight">
+              <label className="absolute -top-3 left-3 bg-card px-2 font-heading text-xs uppercase text-secondary sm:text-sm">Output Pipeline</label>
+              <div className="brutal-input flex min-h-[88px] items-center justify-between gap-3 p-3 transition-colors sm:min-h-[96px] sm:gap-4 sm:p-4">
+                <p className="flex-1 break-words font-heading text-xl tracking-tight text-accent sm:text-2xl md:text-3xl">
                   {passphrase || 'WAITING FOR DATA...'}
                 </p>
                 {passphrase && (
                   <button
                     onClick={copyToClipboard}
-                    className="brutal-button bg-secondary text-white p-4 hover:bg-secondary/90 shrink-0"
+                    className="brutal-button shrink-0 bg-secondary p-3 text-white hover:bg-secondary/90"
                     title="Copy to clipboard"
                     aria-label="Copy passphrase to clipboard"
                   >
                     {copied ? (
-                      <CheckCircle className="w-8 h-8 text-accent" aria-hidden="true" />
+                      <CheckCircle className="h-6 w-6 text-accent sm:h-7 sm:w-7" aria-hidden="true" />
                     ) : (
-                      <Copy className="w-8 h-8" aria-hidden="true" />
+                      <Copy className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden="true" />
                     )}
                   </button>
                 )}
               </div>
               {generationError && (
-                <p className="mt-3 font-bold text-sm text-primary uppercase tracking-wide">
+                <p className="mt-2 text-xs font-bold uppercase tracking-wide text-primary sm:text-sm">
                   {generationError}
                 </p>
               )}
@@ -218,27 +216,27 @@ function App() {
 
           {/* Security Status Badge */}
           <section className="flex justify-center">
-            <div className="brutal-card bg-secondary/20 p-4 flex items-center gap-4 -rotate-1">
-              <Lock className="w-6 h-6 text-primary" aria-hidden="true" />
-              <span className="font-heading text-sm uppercase tracking-widest">
+            <div className="brutal-card flex items-center gap-2 bg-secondary/20 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3">
+              <Lock className="h-5 w-5 text-primary sm:h-6 sm:w-6" aria-hidden="true" />
+              <span className="font-heading text-[10px] uppercase tracking-wider sm:text-xs md:text-sm">
                 Entropy: {wordCount * 12.5} Bits | SHA-256 Compliant
               </span>
             </div>
           </section>
-        </div>
 
-        {/* Footer with Backlink */}
-        <footer className="mt-16 w-full flex justify-center">
-          <a 
-            href="https://sdad.pro" 
-            target="_blank" 
+          {/* Footer with Backlink */}
+          <footer className="flex justify-center">
+            <a
+            href="https://sdad.pro"
+            target="_blank"
             rel="noopener noreferrer"
-            className="brutal-card bg-primary text-white px-6 py-3 font-heading uppercase tracking-widest text-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+            className="brutal-card bg-primary px-4 py-2 text-[10px] font-heading uppercase tracking-wider text-white transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none sm:px-5 sm:py-3 sm:text-xs"
             aria-label="Visit SDAD.PRO - creator of this passphrase generator"
           >
-            Built by <span className="text-secondary">SDAD.PRO</span>
-          </a>
-        </footer>
+              Built by <span className="text-secondary">SDAD.PRO</span>
+            </a>
+          </footer>
+        </div>
       </main>
     </div>
   );
