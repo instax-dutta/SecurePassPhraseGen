@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Key, Lock, RefreshCw, Hash, Copy, CheckCircle } from 'lucide-react';
+import { Key, Lock, RefreshCw, Hash, Copy, CheckCircle } from 'lucide-react';
 import { Loading } from './components/Loading';
 
 const words = [
@@ -85,7 +85,7 @@ function App() {
       {/* Content */}
       <main className="relative z-10 container max-w-4xl mx-auto flex flex-col items-center">
         <div className="flex items-center gap-4 mb-8">
-          <Shield className="w-16 h-16 text-primary" strokeWidth={2.5} aria-hidden="true" />
+          <img src="/logo.svg" alt="Secure Passphrase Generator Logo" className="w-16 h-16" />
           <div>
             <h1 className="text-5xl md:text-7xl font-heading leading-none uppercase -rotate-1">
               Secure

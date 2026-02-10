@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Background square with neobrutalism border -->
+  <rect width="120" height="120" rx="0" ry="0" fill="#000000" stroke="#FF0066" stroke-width="6"/>
+  
+  <!-- Inner square with offset shadow -->
+  <rect x="15" y="15" width="90" height="90" rx="0" ry="0" fill="#1A1A1A" stroke="#33FF33" stroke-width="4" stroke-dasharray="5,5"/>
+  
+  <!-- Shield icon - security theme -->
+  <path d="M 60 25 L 90 50 V 85 L 60 100 L 30 85 V 50 Z" fill="#FF0066" stroke="#FFFFFF" stroke-width="3"/>
+  
+  <!-- Lock icon inside shield -->
+  <path d="M 50 60 V 55 A 5 5 0 0 1 60 55 A 5 5 0 0 1 70 60 V 75 A 5 5 0 0 1 65 80 H 55 A 5 5 0 0 1 50 75 Z" fill="#33FF33" stroke="#000000" stroke-width="2"/>
+  
+  <!-- Keyhole in lock -->
+  <circle cx="60" cy="70" r="3" fill="#000000"/>
+  
+  <!-- Decorative bolt on top of shield -->
+  <rect x="58" y="30" width="4" height="15" fill="#FFFFFF"/>
+  
+  <!-- Binary code text for tech/security theme -->
+  <text x="60" y="115" font-family="Space Mono, monospace" font-size="8" font-weight="bold" fill="#33FF33" text-anchor="middle">101010</text>
+  
+  <!-- Title text (small, uppercase) -->
+  <text x="60" y="40" font-family="Archivo Black, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF" text-anchor="middle" transform="rotate(-15, 60, 40)">SECURE</text>
+  <text x="60" y="105" font-family="Archivo Black, sans-serif" font-size="9" font-weight="bold" fill="#FF0066" text-anchor="middle" transform="rotate(15, 60, 105)">PASSPHRASE</text>
+</svg>
