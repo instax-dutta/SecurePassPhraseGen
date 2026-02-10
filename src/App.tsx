@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Key, Lock, RefreshCw, Hash, Copy, CheckCircle } from 'lucide-react';
+import { checkPassphraseExists, savePassphrase } from './database/passphraseService';
 import { Loading } from './components/Loading';
 
 const words = [
@@ -28,7 +29,7 @@ function App() {
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const generatePassphrase = React.useCallback(() => {
+  const generatePassphrase = React.useCallback(async () => {
     let newPassphrase: string;
     let attempts = 0;
     const maxAttempts = 100; // Prevent infinite loops
@@ -48,10 +49,13 @@ function App() {
 
       newPassphrase = selectedWords.join('-');
       attempts++;
-    } while (previousPhrases.has(newPassphrase) && attempts < maxAttempts);
 
-    // Add the new passphrase to the set of used phrases
+      // Check both local and database for existing passphrase
+    } while ((previousPhrases.has(newPassphrase) || await checkPassphraseExists(newPassphrase)) && attempts < maxAttempts);
+
+    // Add the new passphrase to the set of used phrases and save to database
     previousPhrases.add(newPassphrase);
+    await savePassphrase(newPassphrase);
     setPassphrase(newPassphrase);
     setCopied(false);
   }, [wordCount, previousPhrases]);

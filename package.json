@@ -14,14 +14,17 @@
   },
   "dependencies": {
     "@remotion/cli": "^4.0.420",
+    "dotenv": "^17.2.4",
     "framer-motion": "^12.34.0",
     "lucide-react": "^0.344.0",
+    "pg": "^8.18.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "remotion": "^4.0.420"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
+    "@types/pg": "^8.16.0",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
